@@ -1,61 +1,108 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 using namespace std;
 
 struct Vertex{
-	int num;				//顶点号
-	int x;					//横坐标x
-	int y;					//纵坐标y
-	int demand;				//客户需求量
+	int num;			
+	int x;		
+	int y;				
+	int demand;			
 };
 
-int vertex_num;				//顶点个数
-double best_solution;		//最优解
-int capacity;				//货车最大装载量
-Vertex vertex[1000];		//顶点数组
+int vertex_num;						//the number of clients
+double best_solution;				//the best solution	
+int capacity;						//the capacity of each truck	
 
-//读入文件，并初始化全局变量
+vector<Vertex> vertexs;				//the vector of clients vertexs	
+int pop_size = 5;					//the population size
+vector<vector<int> > population;	//the set of individuals in the population
+
+
 void readFile(char dataFile[]){
 	ifstream input;
 	input.open(dataFile);
 	if (input.is_open()){
 		input >> vertex_num >> best_solution >> capacity;
-		//仓库原点
-		vertex[0].num = 0;
-		input >> vertex[0].x >> vertex[0].y;
-		//读入顶点数据
-		for (int i=1; i<=vertex_num; i++){
+
+		//initialize the vector
+		Vertex temp;
+		for(int i = 0; i <= vertex_num; i++){
+			vertexs.push_back(temp);
+		}
+		//depot coordinate (0,0)
+		vertexs[0].num = 0;
+		input >> vertexs[0].x >> vertexs[0].y;
+
+		for (int i = 1; i <= vertex_num; i++){
 			try{
-				input >> vertex[i].num;
-				input >> vertex[i].x;
-				input >> vertex[i].y;
-				input >> vertex[i].demand;
+				input >> vertexs[i].num;
+				input >> vertexs[i].x;
+				input >> vertexs[i].y;
+				input >> vertexs[i].demand;
 			}
 			catch(string &err){
 				cout << err <<endl;
 			}
 		}
-		/*
-		cout << vertex_num <<" "<< best_solution<<" "<<capacity<<endl;
+		// cout << vertex_num <<" "<< best_solution<<" "<<capacity<<endl;
 
-		for (int i=0; i<= vertex_num; i++){
-			cout <<vertex[i].num <<" "<< vertex[i].x <<" "<<vertex[i].y <<" "<<vertex[i].demand<<endl;
-		}
-		*/
-
-
+		// for (int i=0; i<= vertex_num; i++){
+		// 	cout <<vertexs[i].num <<" "<< vertexs[i].x <<" "<<vertexs[i].y <<" "<<vertexs[i].demand<<endl;
+		// }
 	}
 	else{
 		cout << "open file failed!" <<endl;
 	}
 }
 
+
+void initialize_population(){
+	//truely random number
+	srand((int)time(0) + rand());
+	vector <int> sort_vector;
+	for (int i = 1; i <= vertex_num; i++){
+		sort_vector.push_back(i);
+	}
+	for (int i = 0; i < pop_size; i++){
+		vector <int> temp = sort_vector;
+		int cnt = 0;
+		while (cnt < vertex_num*2){
+			int first = rand()% vertex_num;
+			int second = rand()% vertex_num;
+			while (first == second){
+				second = rand()% vertex_num;
+			}
+			int exchange = temp[first];
+			temp[first] = temp[second];
+			temp[second] = exchange;
+
+			cnt ++;
+		}
+		population.push_back(temp);
+	}	
+}
+
 int main(){
-	//输入数据文件名字
 	char dataFile[100] = "tai75a.dat";
-	cout <<"输入数据文件名字：";
+	cout <<"please input the name of data file";
 	//cin >> dataFile;
 	readFile(dataFile);
+	cout<<endl;
 
+	initialize_population();
+
+	for (int i = 0; i < pop_size; i++){
+		cout << "individual " << i << ": ";
+		for (int j = 0; j < vertex_num; j++){
+			int temp = population[i][j];
+			cout << vertexs[temp].num<< " ";
+		}
+		cout << endl;
+		cout << endl;
+	}
 	system("pause");
 }
