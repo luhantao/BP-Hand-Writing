@@ -18,7 +18,7 @@ struct Vertex{
 int vertex_num;							//the number of clients
 int capacity;							//the capacity of each truck	
 
-int pop_size;						//the population size
+int pop_size;							//the population size
 double transform_probability = 0.200;	//the probability of individual transform
 vector<Vertex> vertexs;					//the vector of clients vertexs	
 vector<vector<int> > population;		//the set of individuals in the population
@@ -147,12 +147,13 @@ void choose_individuals(){
 			best_individual = population[i];
 		}
 
+		//shorter the distance is, larger fitness the individual has.
 		double cur_fitness = 1.0 / cur_distance;
 		individuals_fitness.push_back(cur_fitness);
 		population_fitness += cur_fitness;
 	}
 
-	//caculate the chosen probability of each individual, and accumulate them
+	//caculate the chosen probability of each individual, and accumulate them in 'accumulate_probability'
 	for (int i = 0; i < pop_size; i++){
 		double probability = individuals_fitness[i] / population_fitness;
 		if (i != 0){
@@ -163,12 +164,12 @@ void choose_individuals(){
 		}
 	}
 
-	//choose the number of 'pop_size' new individuals of population
+	//accroding to the 'accumulate_probability', choose the number of 'pop_size' new individuals of population
 	srand((int)time(0) + rand());
 	vector <vector<int> > newPopulation;
 	for (int i = 0; i < pop_size; i++){
 		double randomly = rand()%10000 * 0.0001;
-		//50% of chance push the best individual
+		//50% of chance push back the best individual in the population directly
 		if (i == 0 && randomly < 0.5){
 			newPopulation.push_back(best_individual);
 		}
@@ -258,6 +259,7 @@ void individuals_transform(){
 	}
 }
 
+
 int main(){
 	char dataFile[100];
 	int max_generation;
@@ -289,6 +291,7 @@ int main(){
 	cout << "The cost of the best solution is: "<< best_solution<< endl;
 	cout << endl;
 	cout << "The vertexs' order of the best solution is: "<< endl;
+
 	vector <int> result = add_depot_coordinate(best_individual);
 	for (int i = 0; i < result.size(); i++){
 		cout << result[i]<<" ";
