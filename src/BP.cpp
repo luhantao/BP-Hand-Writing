@@ -234,7 +234,6 @@ void testing(){
 
 		if ((int)test_num % 1000 == 0){
 			cout << "test progress: " << test_num*100/testing_size << "%" << endl;
-			cout << "test num: " << test_num << "  success: " << test_success_count << endl;
 		}
 	}
 	cout << endl;
