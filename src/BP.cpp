@@ -14,6 +14,8 @@ const int first = 784;
 const int second = 100;
 const int third = 10;
 const double alpha = 0.35;
+const int training_size = 60000;
+const int testing_size = 10000;
 
 int input[first];						
 int target[third];						
@@ -162,8 +164,8 @@ void training(){
 		feedback_third();
 
 		cnt ++;
-		if (cnt % 1000 == 0){
-			cout << "training image: " << cnt << endl;
+		if (cnt % 5000 == 0){
+			cout << "training progress: " << cnt*100/training_size << "%" << endl;
 		}
 	}
 	cout << endl;
@@ -231,6 +233,7 @@ void testing(){
 		test_num ++;
 
 		if ((int)test_num % 1000 == 0){
+			cout << "test progress: " << test_num*100/testing_size << "%" << endl;
 			cout << "test num: " << test_num << "  success: " << test_success_count << endl;
 		}
 	}
